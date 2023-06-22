@@ -22,12 +22,20 @@ namespace API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult getAll()
+        public async Task<IActionResult> getAll()
         {
-            var books = _bookRepository.GetAll();
-            var booksdto = _mapper.Map<List<BookDto>>(books);
-            return Ok(booksdto);
-        }
+            var books = await _bookRepository.GetAll();
 
+            return Ok(books);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> getBookById([FromRoute]int id)
+        {
+            var book = await _bookRepository.GetById(id);
+            if (book == null) { 
+                return NotFound();
+            }
+            return Ok(book);
+        }
     }
 }
