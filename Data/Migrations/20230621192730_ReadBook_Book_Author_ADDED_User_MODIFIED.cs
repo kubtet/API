@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class BookAndReadBookAndAuthorAdded : Migration
+    public partial class ReadBook_Book_Author_ADDED_User_MODIFIED : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,8 +53,6 @@ namespace API.Data.Migrations
                 name: "ReadBooks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     BookId = table.Column<int>(type: "INTEGER", nullable: false),
                     Comment = table.Column<string>(type: "TEXT", nullable: true),
@@ -62,7 +60,7 @@ namespace API.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReadBooks", x => x.Id);
+                    table.PrimaryKey("PK_ReadBooks", x => new { x.UserId, x.BookId });
                     table.ForeignKey(
                         name: "FK_ReadBooks_Books_BookId",
                         column: x => x.BookId,
@@ -86,11 +84,6 @@ namespace API.Data.Migrations
                 name: "IX_ReadBooks_BookId",
                 table: "ReadBooks",
                 column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ReadBooks_UserId",
-                table: "ReadBooks",
-                column: "UserId");
         }
 
         /// <inheritdoc />

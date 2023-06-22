@@ -10,6 +10,10 @@
         
         public string Isbn { get; set; }
         public DateTime Publish_date { get; set; }
-        public virtual IEnumerable<ReadBook> ReadBooks { get; set; }
+
+        public virtual ICollection<ReadBook> ReadBooks { get; set; }
+        public virtual ICollection<BookGenre> BookGenres { get; set; }
+        public virtual ICollection<LikedBook> LikedBooks { get; set;}
+        public virtual ICollection<BooksToRead> BooksToRead { get; set; } 
     }
 }

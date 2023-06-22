@@ -1,9 +1,7 @@
 ﻿namespace API.Entities
 {
-    public class ReadBook
+    public class BooksToRead
     {
-        public string Comment { get; set; }
-        public int Rating { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
         public int BookId { get; set; }

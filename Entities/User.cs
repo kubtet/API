@@ -6,5 +6,11 @@ namespace API.Entities
         public string Login { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public DateTime Birthday { get; set; }
+        public DateTime AccountCreated { get; set; }
+        public virtual ICollection<ReadBook> ReadBooks { get; set; }
+        public virtual ICollection<LikedBook> LikedBooks { get; set;}
+        public virtual ICollection<BooksToRead> BooksToRead { get; set; }
+        public virtual ICollection<UserLikesGenre> UserLikesGenres { get; set; }
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230621133736_BookAndReadBookAndAuthorAdded")]
-    partial class BookAndReadBookAndAuthorAdded
+    [Migration("20230621192730_ReadBook_Book_Author_ADDED_User_MODIFIED")]
+    partial class ReadBook_Book_Author_ADDED_User_MODIFIED
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,8 +70,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.ReadBook", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("BookId")
@@ -83,14 +82,9 @@ namespace API.Data.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ReadBooks");
                 });
@@ -103,6 +97,12 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Login")
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("BLOB");
 
                     b.HasKey("Id");
 
@@ -129,7 +129,7 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("API.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("ReadBooks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -145,6 +145,11 @@ namespace API.Data.Migrations
                 });
 
             modelBuilder.Entity("API.Entities.Book", b =>
+                {
+                    b.Navigation("ReadBooks");
+                });
+
+            modelBuilder.Entity("API.Entities.User", b =>
                 {
                     b.Navigation("ReadBooks");
                 });
