@@ -1,4 +1,8 @@
 using API.Extensions;
+using API.Repository;
+using API.Interfaces;
+using API.Data;
+using API.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
