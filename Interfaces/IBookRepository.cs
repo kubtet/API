@@ -8,6 +8,7 @@ namespace API.Interfaces
     {
         public Task<List<BookDto>> GetAll();
         public Task<BookDetailsDto> GetById(int id);
+
         bool BookExists(int id);
     }
 }

@@ -12,12 +12,10 @@ namespace API.Controllers
     public class BooksController: BaseApiController
     {
 
-        private readonly DataContext _context;
         private IBookRepository _bookRepository;
         private IMapper _mapper;
-        public BooksController(DataContext context,IBookRepository bookRepository, IMapper mapper)
+        public BooksController(IBookRepository bookRepository, IMapper mapper)
         {
-            _context = context;
             _bookRepository = bookRepository;
             _mapper = mapper;
         }

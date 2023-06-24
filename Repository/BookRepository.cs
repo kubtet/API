@@ -45,7 +45,7 @@ namespace API.Repository
 
             if (book == null)
             {
-                return null; // Or return an appropriate response indicating that the book was not found
+                return null; 
             }
 
             // Map the book to BookDetailsDto
