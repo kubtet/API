@@ -2,6 +2,7 @@
 using API.DTO;
 using API.Entities;
 using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,13 @@ namespace API.Repository
     public class BookRepository : IBookRepository
     {
         private readonly DataContext _context;
+        private readonly IBookImageService _bookImageService;
         private readonly IMapper _mapper;
-        public BookRepository(DataContext dataContext,IMapper mapper)
+        public BookRepository(DataContext dataContext,IMapper mapper,IBookImageService bookImageService)
         {
             _context = dataContext;   
             _mapper = mapper;
+            _bookImageService = bookImageService;
         }
         public bool BookExists(int id)
         {
@@ -56,16 +59,29 @@ namespace API.Repository
         // Create a book
         // Return -2 if the author does not exist
         // Return -3 if the book's genres were not added to the database
+        // Return -4 if the image file format is wrong
+        // Return -5 if the image is not uploaded
         // Return 0 if the book was not created
         // Return 1 if the book was created
         //
-        public async Task<int> Create(Book book,List<int> genresId)
+        public async Task<int> Create(Book book,List<int> genresId, IFormFile file)
         {
             // Add the book to the database
             var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
             if(author == null)
             {
                 return -2;
+            }
+            if(file != null)
+            {
+                var fileInfo=_bookImageService.UploadImage(file);
+                if (fileInfo.Item1==-1){
+                    return -4;
+                }
+                if(fileInfo.Item1==-2){
+                    return -5;
+                }
+                book.Cover_name=fileInfo.Item2;
             }
             _context.Books.Add(book);
             foreach (var genreId in genresId)

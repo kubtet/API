@@ -36,8 +36,8 @@ namespace API.Controllers
             return Ok(book);
         }
         [HttpPost]
-        public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate)
-        {
+        public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate,[FromForm]IFormFile file)
+        { 
             if(bookCreate == null)
             {
                 return BadRequest(ModelState);
@@ -53,18 +53,28 @@ namespace API.Controllers
                 return BadRequest(ModelState);
             }
             var book = _mapper.Map<Book>(bookCreate);
-            var result = await _bookRepository.Create(book,bookCreate.GenresId);
+            var result = await _bookRepository.Create(book,bookCreate.GenresId,file);
+            if(result==-4)
+            {
+                ModelState.AddModelError("Error", "Allowed file extensions are .jpg, .jpeg, .png)");
+            }
+            if(result==-5)
+            {
+                ModelState.AddModelError("Error","File Not uploaded");
+            }
             if(result==-2)
             {
                 ModelState.AddModelError("Error","Author doesn't exist");
-                return BadRequest(ModelState);
             }
             if(result==-3)
             {
                 ModelState.AddModelError("Error","Bad genres");
-                return BadRequest(ModelState);
             }
-            return Ok(ModelState);
+            if(ModelState.IsValid)
+            {
+                return Ok();
+            }
+            return BadRequest(ModelState);
         }
         [HttpPost]
         [Route("{BookId}/AddGenre/{GenreId}")]
