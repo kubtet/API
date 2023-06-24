@@ -12,12 +12,10 @@ namespace API.Controllers
     public class BooksController: BaseApiController
     {
 
-        private readonly DataContext _context;
         private IBookRepository _bookRepository;
         private IMapper _mapper;
-        public BooksController(DataContext context,IBookRepository bookRepository, IMapper mapper)
+        public BooksController(IBookRepository bookRepository, IMapper mapper)
         {
-            _context = context;
             _bookRepository = bookRepository;
             _mapper = mapper;
         }
@@ -36,6 +34,52 @@ namespace API.Controllers
                 return NotFound();
             }
             return Ok(book);
+        }
+        [HttpPost]
+        public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate)
+        {
+            if(bookCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if(bookCreate.GenresId.Count==0)
+            {
+                ModelState.AddModelError("Error","Book must have at least one genre");
+                return BadRequest(ModelState);
+            }
+            if(await _bookRepository.BookExists(bookCreate.Title,bookCreate.Isbn))
+            {
+                ModelState.AddModelError("Error","Book already exists");
+                return BadRequest(ModelState);
+            }
+            var book = _mapper.Map<Book>(bookCreate);
+            var result = await _bookRepository.Create(book,bookCreate.GenresId);
+            if(result==-2)
+            {
+                ModelState.AddModelError("Error","Author doesn't exist");
+                return BadRequest(ModelState);
+            }
+            if(result==-3)
+            {
+                ModelState.AddModelError("Error","Bad genres");
+                return BadRequest(ModelState);
+            }
+            return Ok(ModelState);
+        }
+        [HttpPost]
+        [Route("{BookId}/AddGenre/{GenreId}")]
+        public async Task<IActionResult> addGenre([FromRoute]int BookId, [FromRoute]int GenreId)
+        {
+            if(_bookRepository.GetById(BookId)==null)
+            {
+                ModelState.AddModelError("Error","Book doesn't exist");
+                return BadRequest(ModelState);
+            }
+            if(await _bookRepository.AddGenreToBook(BookId,GenreId))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }

@@ -1,5 +1,6 @@
 using API.Data;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,14 @@ namespace API.Controllers
     public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
-        public UsersController(DataContext context)
+        private readonly IBookRepository _bookRepository;
+        private readonly IGenreRepository _genreRepository;
+        public UsersController(DataContext context, IBookRepository bookRepository, IGenreRepository genreRepository)
         {
             _context = context;
+            _bookRepository = bookRepository;
+            _genreRepository = genreRepository;
+            
         }
 
         [AllowAnonymous]
@@ -28,12 +34,5 @@ namespace API.Controllers
             return await _context.Users.FindAsync(id);
         }
 
-        // Synchornous code:
-
-        // [HttpGet]
-        // public ActionResult<IEnumerable<User>> GetUsers()
-        // {
-        //     return _context.Users.ToList();
-        // }
     }
 }
