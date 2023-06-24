@@ -6,7 +6,6 @@ namespace API.DTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
-
         public string Isbn { get; set; }
         public string Cover_name { get; set; }
         public DateTime Publish_date { get; set; }
