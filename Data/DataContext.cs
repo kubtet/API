@@ -22,6 +22,9 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Book>()
+                .Property(b => b.Cover_name)
+                .HasDefaultValue("default.png");
             #region ReadBook Relation
             modelBuilder.Entity<ReadBook>()
                 .HasKey(x => new { x.UserId, x.BookId });
