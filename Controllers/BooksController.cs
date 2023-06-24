@@ -67,7 +67,7 @@ namespace API.Controllers
             return Ok(ModelState);
         }
         [HttpPost]
-        [Route("{BookId/AddGenre/{GenreId}")]
+        [Route("{BookId}/AddGenre/{GenreId}")]
         public async Task<IActionResult> addGenre([FromRoute]int BookId, [FromRoute]int GenreId)
         {
             if(_bookRepository.GetById(BookId)==null)

@@ -34,12 +34,5 @@ namespace API.Controllers
             return await _context.Users.FindAsync(id);
         }
 
-        // Synchornous code:
-
-        // [HttpGet]
-        // public ActionResult<IEnumerable<User>> GetUsers()
-        // {
-        //     return _context.Users.ToList();
-        // }
     }
 }
