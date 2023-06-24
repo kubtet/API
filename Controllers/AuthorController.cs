@@ -1,5 +1,7 @@
 using API.DTO;
+using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,9 +9,11 @@ namespace API.Controllers
     public class AuthorController : BaseApiController
     {
         private readonly IAuthorRepository _authorRepository;
-        public AuthorController(IAuthorRepository authorRepository)
+        private readonly IMapper _mapper;
+        public AuthorController(IAuthorRepository authorRepository, IMapper mapper)
         {
             _authorRepository = authorRepository;
+            _mapper = mapper;
         }
         [HttpGet]
         public async Task<ActionResult<List<AuthorDto>>> GetAll()
@@ -26,5 +30,27 @@ namespace API.Controllers
             }
             return author;
         }
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody]AuthorDto authorCreate)
+        {
+            if(authorCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if(await _authorRepository.AuthorExists(authorCreate.Name,authorCreate.Surname,authorCreate.Country))
+            {
+                ModelState.AddModelError("Error","Author already exists");
+                return BadRequest(ModelState);
+            }
+            var author = _mapper.Map<Author>(authorCreate);
+            var result = await _authorRepository.Create(author);
+            if(result)
+            {
+                return Ok(ModelState);
+            }
+            return BadRequest(ModelState);
+
+        }
+
     }
 }

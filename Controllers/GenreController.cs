@@ -1,4 +1,6 @@
-﻿using API.Interfaces;
+﻿using API.DTO;
+using API.Entities;
+using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +31,26 @@ namespace API.Controllers
                 return NotFound(genre.Id);
             }
             return Ok(genre);
+        }
+        [HttpPost]
+        public async Task<IActionResult> create([FromBody]GenreDto genreCreate)
+        {
+            if(genreCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if(await _genreRepository.GenreExists(genreCreate.Name))
+            {
+                ModelState.AddModelError("Error","Genre already exists");
+                return BadRequest(ModelState);
+            }
+            var genre = _mapper.Map<Genre>(genreCreate);
+            var result = await _genreRepository.Create(genre);
+            if(result)
+            {
+                return Ok(ModelState);
+            }
+            return BadRequest(ModelState);
         }
     }
 

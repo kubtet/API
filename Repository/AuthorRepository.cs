@@ -1,5 +1,6 @@
 using API.Data;
 using API.DTO;
+using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -33,6 +34,23 @@ namespace API.Repository{
                 return null;
             }
             return author;
+        }
+        public async Task<Boolean> Create(Author author)
+        {
+            _context.Authors.Add(author);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
+        public async Task<Boolean> AuthorExists(int id)
+        {
+            return await _context.Authors.AnyAsync(a => a.Id == id);
+        }
+        public async Task<Boolean> AuthorExists(string name, string surname, string country)
+        {
+            return await _context.Authors
+                .AnyAsync(a => a.Name.ToUpper() == name.ToUpper()
+                    && a.Surname.ToUpper() == surname.ToUpper()
+                    && a.Country.ToUpper() == country.ToUpper());
         }
     }
 }

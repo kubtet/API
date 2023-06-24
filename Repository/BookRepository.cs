@@ -53,6 +53,64 @@ namespace API.Repository
 
             return bookDto;
         }
+        // Create a book
+        // Return -2 if the author does not exist
+        // Return -3 if the book's genres were not added to the database
+        // Return 0 if the book was not created
+        // Return 1 if the book was created
+        //
+        public async Task<int> Create(Book book,List<int> genresId)
+        {
+            // Add the book to the database
+            var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+            if(author == null)
+            {
+                return -2;
+            }
+            _context.Books.Add(book);
+            foreach (var genreId in genresId)
+            {
+                var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Id == genreId);
+                if(genre == null)
+                {
+                    return -3;
+                }
+                BookGenre bookGenre = new BookGenre
+                {
+                    Book= book,
+                    Genre = genre
+                };
+                _context.BooksGenres.Add(bookGenre);
+            }
+           return await _context.SaveChangesAsync();
 
+        }
+        public async Task<Boolean> BookExists(string title, string isbn)
+        {
+            return await _context.Books
+                .AnyAsync(b => b.Title.ToUpper() == title.ToUpper()
+                    && b.Isbn.ToUpper() == isbn.ToUpper());
+        }
+        public async Task<Boolean> AddGenreToBook(int bookId, int genreId)
+        {
+            var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Id == genreId);
+            if(genre == null)
+            {
+                return false;
+            }
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+            if(book == null)
+            {
+                return false;
+            }
+            BookGenre bookGenre = new BookGenre
+            {
+                Book = book,
+                Genre = genre
+            };
+            _context.BooksGenres.Add(bookGenre);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.DTO;
+using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -30,5 +31,21 @@ namespace API.Repository
                 .FirstOrDefaultAsync();
 
         }
+        public async Task<Boolean> Create(Genre genre)
+        {
+            _context.Genres.Add(genre);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
+        public async Task<Boolean> GenreExists(int id)
+        {
+            return await _context.Genres.AnyAsync(g => g.Id == id);
+        }
+        public async Task<Boolean> GenreExists(string name)
+        {
+            return await _context.Genres
+            .AnyAsync(g => g.Name.ToUpper() == name.ToUpper());
+        }
+        
     }
 }
