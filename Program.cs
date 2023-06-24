@@ -22,12 +22,12 @@ app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("ht
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//           Path.Combine(builder.Environment.ContentRootPath, "uploads")),
-//    RequestPath = "/uploads"
-//});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "uploads")),
+    RequestPath = "/uploads"
+});
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

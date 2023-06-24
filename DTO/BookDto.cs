@@ -8,6 +8,7 @@ namespace API.DTO
         public string Title { get; set; }
 
         public string Isbn { get; set; }
+        public string Cover_name { get; set; }
         public DateTime Publish_date { get; set; }
         public int UserLikes { get; set; }
         public string AuthorName { get; set; }

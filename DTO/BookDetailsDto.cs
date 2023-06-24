@@ -9,7 +9,7 @@ namespace API.DTO
         public string Description { get; set; }
         public int AuthorId { get; set; }
         public virtual AuthorDto Author { get; protected set; }
-
+        public string Cover_name { get; set; }
         public string Isbn { get;  set; }
         public DateTime Publish_date { get; set; }
         public int UserLikes { get; protected set; }
