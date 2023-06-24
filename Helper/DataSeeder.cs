@@ -2,6 +2,7 @@
 using API.Entities;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace API.Helper;
 /*
@@ -50,47 +51,24 @@ public class DataSeeder
 
     private void SeedAuthorsAndBooks()
     {
-        var author1 = new Author
+        if(_context.Books.Any()) return;
+
+        var bookData = File.ReadAllText("Data/BookSeedData.json");
+
+        var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+
+        var books = JsonSerializer.Deserialize<List<Book>>(bookData);
+
+        foreach(var book in books) 
         {
-            Name = "John",
-            Surname = "Doe",
-            Country = "USA"
-        };
-
-        var author2 = new Author
-        {
-            Name = "Jane",
-            Surname = "Smith",
-            Country = "UK"
-        };
-
-        var book1 = new Book
-        {
-            Title = "Book 1",
-            Description = "Description for Book 1",
-            Publish_date = DateTime.Now,
-            Author = author1,
-            Isbn = "123456789"
-        };
-
-        var book2 = new Book
-        {
-            Title = "Book 2",
-            Description = "Description for Book 2",
-            Publish_date = DateTime.Now,
-            Author = author2,
-            Isbn = "987654321"
-        };
-
-        author1.Books = new List<Book> { book1 };
-        author2.Books = new List<Book> { book2 };
-
-        _context.Authors.AddRange(author1, author2);
-        _context.Books.AddRange(book1, book2);
+            _context.Books.Add(book);
+        }
     }
 
     private void SeedGenres()
     {
+        if(_context.Genres.Any()) return;
+
         var genre1 = new Genre
         {
             Name = "Fantasy"
@@ -106,6 +84,8 @@ public class DataSeeder
 
     private void SeedUsers()
     {
+        if(_context.Users.Any()) return;
+
         var user1 = new User
         {
             Login = "user1",

@@ -23,7 +23,7 @@ namespace API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Book>()
-                .Property(b => b.Cover_name)
+                .Property(b => b.CoverPath)
                 .HasDefaultValue("default.png");
             #region ReadBook Relation
             modelBuilder.Entity<ReadBook>()
@@ -85,12 +85,7 @@ namespace API.Data
                 .WithMany(x => x.UserLikesGenres)
                 .HasForeignKey(x => x.UserId);
             #endregion
-            #region User Configure
-            modelBuilder.Entity<User>()
-                .Property(b => b.AccountCreated)
-                .HasDefaultValueSql("getdate()");
 
-            #endregion
         }
     }
 }
