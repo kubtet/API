@@ -32,7 +32,7 @@ namespace API.Services{
                     fileMD5 = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                 }
             }
-            string path = Path.Combine(Directory.GetCurrentDirectory(),"uploads",fileMD5+"."+extension);
+            string path = Path.Combine(Directory.GetCurrentDirectory(),"uploads",fileMD5+extension);
             try
             {
                 using (var stream = new FileStream(path, FileMode.Create))
@@ -43,7 +43,7 @@ namespace API.Services{
             catch(Exception e){
                 return null;
             }
-            return "uploads/"+fileMD5 + extension;
+            return fileMD5 + extension;
         }
     }
 }
