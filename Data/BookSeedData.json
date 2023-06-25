@@ -1,0 +1,75 @@
+[
+    {
+        "Title": "Sample Book",
+        "Description": "This is a sample book description.",
+        "CoverPath": "assets/Covers/Default.jpeg",
+        "Author": {
+            "Name": "John",
+            "Surname": "Doe",
+            "Country": "Cape Verde"
+        },
+        "Isbn": "978-3-16-148410-0",
+        "Publish_date": "2022-06-15T00:00:00"
+    },
+    {
+        "Title": "The Great Gatsby",
+        "Description": "A classic novel by F. Scott Fitzgerald.",
+        "CoverPath": "assets/Covers/TheGreatGatsby.jpg",
+        "Author": {
+            "Name": "F. Scott",
+            "Surname": "Fitzgerald",
+            "Country": "United States"
+        },
+        "Isbn": "978-0-7432-7356-5",
+        "Publish_date": "1925-04-10T00:00:00"
+    },
+    {
+        "Title": "To Kill a Mockingbird",
+        "Description": "A Pulitzer Prize-winning novel by Harper Lee.",
+        "CoverPath": "assets/Covers/ToKillAMockingbird.jpeg",
+        "Author": {
+            "Name": "Harper",
+            "Surname": "Lee",
+            "Country": "United States"
+        },
+        "Isbn": "978-0-446-31078-9",
+        "Publish_date": "1960-07-11T00:00:00"
+    },
+    {
+        "Title": "1984",
+        "Description": "A dystopian novel by George Orwell.",
+        "CoverPath": "assets/Covers/1984.jpeg",
+        "Author": {
+            "Name": "George",
+            "Surname": "Orwell",
+            "Country": "United Kingdom"
+        },
+        "Isbn": "978-0-14-103614-4",
+        "Publish_date": "1949-06-08T00:00:00"
+    },
+    {
+        "Title": "Pride and Prejudice",
+        "Description": "A classic novel by Jane Austen.",
+        "CoverPath": "assets/Covers/PrideAndPrejudice.jpeg",
+        "Author": {
+            "Name": "Jane",
+            "Surname": "Austen",
+            "Country": "United Kingdom"
+        },
+        "Isbn": "978-0-14-143951-8",
+        "Publish_date": "1813-01-28T00:00:00"
+    },
+    {
+        "Title": "The Catcher in the Rye",
+        "Description": "A coming-of-age novel by J.D. Salinger.",
+        "CoverPath": "assets/Covers/TheCatcherInTheRye.jpeg",
+        "Author": {
+          "Name": "J.D.",
+          "Surname": "Salinger",
+          "Country": "United States"
+        },
+        "Isbn": "978-0-316-76955-0",
+        "Publish_date": "1951-07-16T00:00:00"
+      }
+      
+]

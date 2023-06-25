@@ -16,7 +16,7 @@ namespace API.Helper
                 .ForMember(dest => dest.UserLikes, opt => opt.MapFrom(src => src.LikedBooks.Count))
                 .ForMember(dest => dest.UsersRead, opt => opt.MapFrom(src => src.ReadBooks.Count))
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.BookGenres.Select(bg => bg.Genre)))
-                .ForMember(dest => dest.Cover_name, opt => opt.MapFrom(src => src.Cover_name==null ? "default.jpg" : src.Cover_name));
+                .ForMember(dest => dest.CoverPath, opt => opt.MapFrom(src => src.CoverPath==null ? "/assets/covers/default.jpeg" : src.CoverPath));
             CreateMap<Book, BookDetailsDto>()
                 .ForMember(dest => dest.UserLikes, opt => opt.MapFrom(src => src.LikedBooks.Count))
                 .ForMember(dest => dest.UsersRead, opt => opt.MapFrom(src => src.ReadBooks.Count))
