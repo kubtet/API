@@ -36,7 +36,7 @@ namespace API.Controllers
             return Ok(book);
         }
         [HttpPost]
-        public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate,[FromForm]IFormFile file)
+        public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate,[FromForm(Name="File")]IFormFile file)
         { 
             if(bookCreate == null)
             {
