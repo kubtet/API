@@ -3,7 +3,9 @@ using API.DTO;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -120,5 +122,6 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+
     }
 }

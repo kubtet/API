@@ -43,7 +43,7 @@ namespace API.Services{
             catch(Exception e){
                 return null;
             }
-            return fileMD5 + extension;
+            return "uploads/"+fileMD5 + extension;
         }
     }
 }
