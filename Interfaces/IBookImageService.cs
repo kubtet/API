@@ -2,6 +2,7 @@ namespace API.Interfaces
 {
     public interface IBookImageService
     {
-       public Tuple<int,string> UploadImage(IFormFile file);
+        public Task<string> UploadImage(IFormFile file);
+        public bool CorrectFileFormat(IFormFile file);
     }
 }

@@ -64,24 +64,13 @@ namespace API.Repository
         // Return 0 if the book was not created
         // Return 1 if the book was created
         //
-        public async Task<int> Create(Book book,List<int> genresId, IFormFile file)
+        public async Task<int> Create(Book book,List<int> genresId)
         {
             // Add the book to the database
             var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
             if(author == null)
             {
                 return -2;
-            }
-            if(file != null)
-            {
-                var fileInfo=_bookImageService.UploadImage(file);
-                if (fileInfo.Item1==-1){
-                    return -4;
-                }
-                if(fileInfo.Item1==-2){
-                    return -5;
-                }
-                book.CoverPath=fileInfo.Item2;
             }
             _context.Books.Add(book);
             foreach (var genreId in genresId)
@@ -140,6 +129,37 @@ namespace API.Repository
                 return null;
             }      
             return _mapper.Map<List<BookDto>>(books);
+        }
+        //return 0 file added
+        //return -1 file not added
+        //return -2 bookId is wrong
+        //return -3 file is null
+        //return -4 wrong file format
+        public async Task<int> AddCover(IFormFile file, int BookId)
+        {
+            if (file == null)
+            {
+                return -3;
+            }
+            if (!_bookImageService.CorrectFileFormat(file))
+            {
+                return -4;
+            }
+            var book=_context.Books.Where(b=>b.Id== BookId).FirstOrDefault();
+            if(book == null)
+            {
+                return -2;
+            }
+            var fileUploadResult = await _bookImageService.UploadImage(file);
+            if (fileUploadResult == null)
+            {
+                return -1;
+            }
+            book.CoverPath = fileUploadResult;
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+            return 0;
+
         }
     }
 }

@@ -4,15 +4,25 @@ using API.Interfaces;
 namespace API.Services{
     public class BookImageService : IBookImageService
     {
-        public Tuple<int,string> UploadImage(IFormFile file)
+        //return -1 unhandled error
+        //return -2 incorrect file format
+        //return 0 file
+        public bool CorrectFileFormat(IFormFile file)
+        {
+            string extension = Path.GetExtension(file.FileName);
+            string[] allowedExtensions = { ".jpg", ".png", ".jpeg" };
+            if (!allowedExtensions.Contains(extension.ToLower()))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<string> UploadImage(IFormFile file)
         {
             string fileName = file.FileName;
             string extension = Path.GetExtension(fileName);
-            string[] allowedExtensions = {".jpg", ".png", ".jpeg"};
-            if (!allowedExtensions.Contains(extension.ToLower()))
-            {
-                return Tuple.Create(-1, "Only jpg, png and jpeg files are allowed");
-            }
+
             var fileMD5 ="";
             using (var md5 = MD5.Create())
             {
@@ -27,13 +37,13 @@ namespace API.Services{
             {
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    file.CopyTo(stream);
+                    await file.CopyToAsync(stream);
                 }
             }
             catch(Exception e){
-                return Tuple.Create(-2, e.Message);
+                return null;
             }
-            return Tuple.Create(0, fileMD5+"."+extension);
+            return fileMD5 + extension;
         }
     }
 }
