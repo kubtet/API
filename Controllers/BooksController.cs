@@ -35,6 +35,16 @@ namespace API.Controllers
             }
             return Ok(book);
         }
+        [HttpGet("getByTitle/{title}")]
+        public async Task<IActionResult> getBookByTitle([FromRoute]string title)
+        {
+            var book = await _bookRepository.GetBooksByTitle(title);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return Ok(book);
+        }
         [HttpPost]
         public async Task<IActionResult> create([FromBody]BookCreateDto bookCreate,[FromForm(Name="File")]IFormFile file)
         { 

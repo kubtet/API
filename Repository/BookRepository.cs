@@ -81,7 +81,7 @@ namespace API.Repository
                 if(fileInfo.Item1==-2){
                     return -5;
                 }
-                book.Cover_name=fileInfo.Item2;
+                book.CoverPath=fileInfo.Item2;
             }
             _context.Books.Add(book);
             foreach (var genreId in genresId)
@@ -127,6 +127,19 @@ namespace API.Repository
             _context.BooksGenres.Add(bookGenre);
             var result = await _context.SaveChangesAsync();
             return result > 0;
+        }
+        public async Task<List<BookDto>> GetBooksByTitle(string title)
+        {
+            var books = await _context.Books
+                .Where(b => b.Title.Contains(title))
+                .Include(b => b.Author)
+                .Include(b => b.BookGenres)
+                .ToListAsync();
+            if (books == null)
+            {
+                return null;
+            }      
+            return _mapper.Map<List<BookDto>>(books);
         }
     }
 }
