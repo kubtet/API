@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 
 namespace API.Controllers
@@ -20,6 +21,7 @@ namespace API.Controllers
         {
             _bookRepository = bookRepository;
             _mapper = mapper;
+            
         }
         [HttpGet]
         public async Task<IActionResult> getAll()
@@ -35,6 +37,7 @@ namespace API.Controllers
             if (book == null) {
                 return NotFound();
             }
+ 
             return Ok(book);
         }
         [HttpGet("getByTitle/{title}")]
@@ -85,13 +88,13 @@ namespace API.Controllers
         {
 
             var result = await _bookRepository.AddCover(file, bookId);
-            if(result==-4) {
-                ModelState.AddModelError("Error", "File should be uploaded");
+            if(result== -1) {
+                ModelState.AddModelError("Error", "Something went wrong");
                 return BadRequest(ModelState);
             }
             if(result == -3)
             {
-                ModelState.AddModelError("Error", "Incorrect file format");
+                ModelState.AddModelError("Error", "File not provided");
                 return BadRequest(ModelState);
             }
             if (result == -2)
@@ -100,7 +103,7 @@ namespace API.Controllers
 
                 return BadRequest(ModelState);
             }
-            if(result == -1)
+            if(result == -4)
             {
                 ModelState.AddModelError("Error", "allowed file formats jpg,png,jpeg");
             }
