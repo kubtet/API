@@ -41,7 +41,7 @@ namespace API.Services{
                 }
             }
             catch(Exception e){
-                return null;
+                return e.Message;
             }
             return fileMD5 + extension;
         }
