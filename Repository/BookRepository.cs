@@ -2,6 +2,7 @@
 using API.DTO;
 using API.Entities;
 using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,13 @@ namespace API.Repository
     public class BookRepository : IBookRepository
     {
         private readonly DataContext _context;
+        private readonly IBookImageService _bookImageService;
         private readonly IMapper _mapper;
-        public BookRepository(DataContext dataContext,IMapper mapper)
+        public BookRepository(DataContext dataContext,IMapper mapper,IBookImageService bookImageService)
         {
             _context = dataContext;   
             _mapper = mapper;
+            _bookImageService = bookImageService;
         }
         public bool BookExists(int id)
         {
@@ -56,6 +59,8 @@ namespace API.Repository
         // Create a book
         // Return -2 if the author does not exist
         // Return -3 if the book's genres were not added to the database
+        // Return -4 if the image file format is wrong
+        // Return -5 if the image is not uploaded
         // Return 0 if the book was not created
         // Return 1 if the book was created
         //
@@ -111,6 +116,50 @@ namespace API.Repository
             _context.BooksGenres.Add(bookGenre);
             var result = await _context.SaveChangesAsync();
             return result > 0;
+        }
+        public async Task<List<BookDto>> GetBooksByTitle(string title)
+        {
+            var books = await _context.Books
+                .Where(b => b.Title.Contains(title))
+                .Include(b => b.Author)
+                .Include(b => b.BookGenres)
+                .ToListAsync();
+            if (books == null)
+            {
+                return null;
+            }      
+            return _mapper.Map<List<BookDto>>(books);
+        }
+        //return 0 file added
+        //return -1 file not added
+        //return -2 bookId is wrong
+        //return -3 file is null
+        //return -4 wrong file format
+        public async Task<int> AddCover(IFormFile file, int BookId)
+        {
+            if (file == null)
+            {
+                return -3;
+            }
+            if (!_bookImageService.CorrectFileFormat(file))
+            {
+                return -4;
+            }
+            var book=_context.Books.Where(b=>b.Id== BookId).FirstOrDefault();
+            if(book == null)
+            {
+                return -2;
+            }
+            var fileUploadResult = await _bookImageService.UploadImage(file);
+            if (fileUploadResult == null)
+            {
+                return -1;
+            }
+            book.CoverPath = fileUploadResult;
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+            return 0;
+
         }
     }
 }
