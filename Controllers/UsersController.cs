@@ -4,7 +4,7 @@ using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Security.Claims;
 namespace API.Controllers
 {
     [Authorize]
@@ -29,10 +29,24 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            return await _context.Users.FindAsync(id);
+            // Get the authenticated user's ID
+            //var authenticatedUserId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                // If the user is not found, return a not found response
+                return NotFound();
+            }
+
+            // Return the user
+            return user;
         }
-        
+
+
     }
 }
