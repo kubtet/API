@@ -161,5 +161,104 @@ namespace API.Repository
             return 0;
 
         }
+        public async Task<bool> likeBook(string userName, int BookId){
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == userName);
+            if(user == null)
+            {
+                return false;
+            }
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == BookId);
+            if(book == null)
+            {
+                return false;
+            }
+            var like = await _context.LikedBooks.FirstOrDefaultAsync(lb => lb.BookId == BookId && lb.UserId == user.Id);
+            if(like != null)
+            {
+                _context.LikedBooks.Remove(like);
+            }
+            else{
+                LikedBook likedBook = new LikedBook
+                {
+                    Book = book,
+                    User = user
+                };
+                _context.LikedBooks.Add(likedBook);
+            }
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
+        public async Task<Boolean> AddToRead(string userName, int BookId, int rating, string comment){
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == userName);
+            if(user == null)
+            {
+                return false;
+            }
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == BookId);
+            if(book == null)
+            {
+                return false;
+            }
+            
+            var read = await _context.ReadBooks.FirstOrDefaultAsync(rb => rb.BookId == BookId && rb.UserId == user.Id);
+            
+            if(read==null){
+                ReadBook readBook = new ReadBook
+                {
+                    Book = book,
+                    User = user,
+                    Rating = rating,
+                    Comment = comment
+                };
+                _context.ReadBooks.Add(readBook);
+            }
+            else{
+                read.Rating = rating;
+                read.Comment = comment;
+                _context.ReadBooks.Update(read);
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+        public async Task<Boolean> DeleteFromRead(string userName, int BookId){
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == userName);
+            if(user == null)
+            {
+                return false;
+            }
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == BookId);
+            if(book == null)
+            {
+                return false;
+            }
+            var read = await _context.ReadBooks.FirstOrDefaultAsync(rb => rb.BookId == BookId && rb.UserId == user.Id);
+            if(read == null)
+            {
+                return false;
+            }
+            _context.ReadBooks.Remove(read);
+            return await _context.SaveChangesAsync() > 0;
+        }
+        public async Task<List<BookDto>> LikedBooks(string userName)
+        {
+            var user = await  _context.Users.FirstAsync(u => u.Login == userName);
+            var likedBooks = await _context.LikedBooks.Where(lb => lb.UserId == user.Id)
+                .Include(lb => lb.Book)
+                .ThenInclude(b => b.Author)
+                .Include(lb => lb.Book)
+                .ThenInclude(b => b.BookGenres)
+                .ToListAsync();
+            return _mapper.Map<List<BookDto>>(likedBooks.Select(lb => lb.Book).ToList());
+        }
+        public async Task<List<BookDto>> ReadBooks(string userName)
+        {
+            var user = await  _context.Users.FirstAsync(u => u.Login == userName);
+            var readBooks = await _context.ReadBooks.Where(rb => rb.UserId == user.Id)
+                .Include(rb => rb.Book)
+                .ThenInclude(b => b.Author)
+                .Include(rb => rb.Book)
+                .ThenInclude(b => b.BookGenres)
+                .ToListAsync();
+            return _mapper.Map<List<BookDto>>(readBooks.Select(rb => rb.Book).ToList());
+        }
     }
 }

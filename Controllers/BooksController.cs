@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -125,6 +126,67 @@ namespace API.Controllers
             }
             return BadRequest();
         }
-
+        [HttpPut]
+        [Route("{BookId}/Like")]
+        [Authorize]
+        public async Task<IActionResult> likeBook([FromRoute]int BookId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _bookRepository.likeBook(userName, BookId))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpPut]
+        [Route("{BookId}/Read")]
+        [Authorize]
+        public async Task<IActionResult> addToRead([FromRoute]int BookId, [FromBody] ReadBookDto readBookDto)
+        {
+            if(readBookDto == null)
+            {
+                ModelState.AddModelError("Error", "Rating and comment are required");
+                return BadRequest(ModelState);
+            }
+            if(readBookDto.Rating < 1 || readBookDto.Rating > 5)
+            {
+                ModelState.AddModelError("Error", "Rating must be between 1 and 5");
+                return BadRequest(ModelState);
+            }
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _bookRepository.AddToRead(userName, BookId, readBookDto.Rating, readBookDto.Comment))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpDelete]
+        [Route("{BookId}/Read")]
+        [Authorize]
+        public async Task<IActionResult> deleteFromRead([FromRoute]int BookId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _bookRepository.DeleteFromRead(userName, BookId))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpGet]
+        [Route("LikedBooks")]
+        [Authorize]
+        public async Task<IActionResult> LikedBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.LikedBooks(userName));
+        }
+        [HttpGet]
+        [Route("ReadBooks")]
+        [Authorize]
+        public async Task<IActionResult> ReadBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.ReadBooks(userName));
+        }
     }
 }
