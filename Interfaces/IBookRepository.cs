@@ -17,5 +17,8 @@ namespace API.Interfaces
         public Task<Boolean> AddToRead(string userName, int BookId, int rating, string comment);
         public Task<Boolean> DeleteFromRead(string userName, int BookId);
         bool BookExists(int id);
+        public Task<List<BookDto>> LikedBooks(string userName);
+        public Task<List<BookDto>> ReadBooks(string userName);
+
     }
 }

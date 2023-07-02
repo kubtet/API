@@ -172,6 +172,21 @@ namespace API.Controllers
             }
             return BadRequest();
         }
-
+        [HttpGet]
+        [Route("LikedBooks")]
+        [Authorize]
+        public async Task<IActionResult> LikedBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.LikedBooks(userName));
+        }
+        [HttpGet]
+        [Route("ReadBooks")]
+        [Authorize]
+        public async Task<IActionResult> ReadBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.ReadBooks(userName));
+        }
     }
 }

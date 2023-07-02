@@ -238,5 +238,27 @@ namespace API.Repository
             _context.ReadBooks.Remove(read);
             return await _context.SaveChangesAsync() > 0;
         }
+        public async Task<List<BookDto>> LikedBooks(string userName)
+        {
+            var user = await  _context.Users.FirstAsync(u => u.Login == userName);
+            var likedBooks = await _context.LikedBooks.Where(lb => lb.UserId == user.Id)
+                .Include(lb => lb.Book)
+                .ThenInclude(b => b.Author)
+                .Include(lb => lb.Book)
+                .ThenInclude(b => b.BookGenres)
+                .ToListAsync();
+            return _mapper.Map<List<BookDto>>(likedBooks.Select(lb => lb.Book).ToList());
+        }
+        public async Task<List<BookDto>> ReadBooks(string userName)
+        {
+            var user = await  _context.Users.FirstAsync(u => u.Login == userName);
+            var readBooks = await _context.ReadBooks.Where(rb => rb.UserId == user.Id)
+                .Include(rb => rb.Book)
+                .ThenInclude(b => b.Author)
+                .Include(rb => rb.Book)
+                .ThenInclude(b => b.BookGenres)
+                .ToListAsync();
+            return _mapper.Map<List<BookDto>>(readBooks.Select(rb => rb.Book).ToList());
+        }
     }
 }

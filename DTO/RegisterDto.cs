@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTO
@@ -8,5 +9,7 @@ namespace API.DTO
         public string Login { get; set; }
         [Required]
         public string Password { get; set; }
+        [Required]
+        public DateTime Birthday { get; set; }
     }
 }
