@@ -19,6 +19,10 @@ namespace API.Interfaces
         bool BookExists(int id);
         public Task<List<BookDto>> LikedBooks(string userName);
         public Task<List<BookDto>> ReadBooks(string userName);
+        public Task<Boolean> ToRead(string userName, int bookId);
+
+        public Task<List<BookDto>> getToRead(string userName);
+
 
     }
 }

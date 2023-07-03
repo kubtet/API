@@ -188,5 +188,25 @@ namespace API.Controllers
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Ok(await _bookRepository.ReadBooks(userName));
         }
+        [HttpPut]
+        [Route("{BookId}/ToRead")]
+        [Authorize]
+        public async Task<IActionResult> toRead([FromRoute] int BookId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _bookRepository.ToRead(userName, BookId))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpGet]
+        [Route("ToRead")]
+        [Authorize]
+        public async Task<IActionResult> getLikedBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.getToRead(userName));
+        }
     }
 }
