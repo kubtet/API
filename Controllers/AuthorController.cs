@@ -44,9 +44,9 @@ namespace API.Controllers
             }
             var author = _mapper.Map<Author>(authorCreate);
             var result = await _authorRepository.Create(author);
-            if(result)
+            if(result>=0)
             {
-                return Ok(ModelState);
+                return Ok(await _authorRepository.GetById(result));
             }
             return BadRequest(ModelState);
 

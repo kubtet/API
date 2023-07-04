@@ -154,19 +154,7 @@ namespace API.Controllers
                 return BadRequest(ModelState);
             }
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (await _bookRepository.AddToRead(userName, BookId, readBookDto.Rating, readBookDto.Comment))
-            {
-                return Ok();
-            }
-            return BadRequest();
-        }
-        [HttpDelete]
-        [Route("{BookId}/Read")]
-        [Authorize]
-        public async Task<IActionResult> deleteFromRead([FromRoute]int BookId)
-        {
-            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (await _bookRepository.DeleteFromRead(userName, BookId))
+            if (await _bookRepository.ToRead(userName, BookId, readBookDto.Rating, readBookDto.Comment))
             {
                 return Ok();
             }

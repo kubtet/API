@@ -31,11 +31,12 @@ namespace API.Repository
                 .FirstOrDefaultAsync();
 
         }
-        public async Task<Boolean> Create(Genre genre)
+        public async Task<int> Create(Genre genre)
         {
             _context.Genres.Add(genre);
             var result = await _context.SaveChangesAsync();
-            return result > 0;
+            return result > 0 ? genre.Id:-1;
+
         }
         public async Task<Boolean> GenreExists(int id)
         {
