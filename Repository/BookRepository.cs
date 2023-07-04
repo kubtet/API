@@ -88,7 +88,9 @@ namespace API.Repository
                 };
                 _context.BooksGenres.Add(bookGenre);
             }
-            return await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            return book.Id;
+            
 
         }
         public async Task<Boolean> BookExists(string title, string isbn)
@@ -124,6 +126,7 @@ namespace API.Repository
                 .Where(b => b.Title.Contains(title))
                 .Include(b => b.Author)
                 .Include(b => b.BookGenres)
+                .ThenInclude(bg => bg.Genre)
                 .ToListAsync();
             if (books == null)
             {
