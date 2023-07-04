@@ -80,7 +80,7 @@ namespace API.Controllers
             }
             if (ModelState.IsValid)
             {
-                return Ok();
+                return Ok(await _bookRepository.GetById(result));
             }
             return BadRequest(ModelState);
         }
@@ -115,7 +115,7 @@ namespace API.Controllers
         [Route("{BookId}/AddGenre/{GenreId}")]
         public async Task<IActionResult> addGenre([FromRoute]int BookId, [FromRoute]int GenreId)
         {
-            if(_bookRepository.GetById(BookId)==null)
+            if(await _bookRepository.GetById(BookId)==null)
             {
                 ModelState.AddModelError("Error","Book doesn't exist");
                 return BadRequest(ModelState);
@@ -187,6 +187,26 @@ namespace API.Controllers
         {
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Ok(await _bookRepository.ReadBooks(userName));
+        }
+        [HttpPut]
+        [Route("{BookId}/ToRead")]
+        [Authorize]
+        public async Task<IActionResult> toRead([FromRoute] int BookId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _bookRepository.ToRead(userName, BookId))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpGet]
+        [Route("ToRead")]
+        [Authorize]
+        public async Task<IActionResult> getLikedBooks()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _bookRepository.getToRead(userName));
         }
     }
 }
