@@ -35,11 +35,15 @@ namespace API.Repository{
             }
             return author;
         }
-        public async Task<Boolean> Create(Author author)
+        public async Task<int> Create(Author author)
         {
             _context.Authors.Add(author);
             var result = await _context.SaveChangesAsync();
-            return result > 0;
+            if (result > 0)
+            {
+                return author.Id;
+            }
+            return -1;
         }
         public async Task<Boolean> AuthorExists(int id)
         {

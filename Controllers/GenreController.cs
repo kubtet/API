@@ -46,9 +46,9 @@ namespace API.Controllers
             }
             var genre = _mapper.Map<Genre>(genreCreate);
             var result = await _genreRepository.Create(genre);
-            if(result)
+            if(result>= 0)
             {
-                return Ok(ModelState);
+                return Ok(await _genreRepository.GetById(result));
             }
             return BadRequest(ModelState);
         }
