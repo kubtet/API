@@ -134,6 +134,16 @@ namespace API.Repository
             }
             return _mapper.Map<List<BookDto>>(books);
         }
+        public async Task<Boolean> DeleteBook(int id)
+        {
+            var book = await _context.Books.Where(b => b.Id == id).FirstAsync() ;
+            if (book == null){
+                return false;
+            }
+            _context.Books.Remove(book);
+            return await _context.SaveChangesAsync() > 0;
+
+        }
         //return 0 file added
         //return -1 file not added
         //return -2 bookId is wrong
@@ -192,7 +202,7 @@ namespace API.Repository
             var result = await _context.SaveChangesAsync();
             return result > 0;
         }
-        public async Task<Boolean> ToRead(string userName, int BookId, int rating, string comment) {
+        public async Task<Boolean> ToRead(string userName, int BookId, int rating) {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == userName);
             if (user == null)
             {
@@ -211,8 +221,7 @@ namespace API.Repository
                 {
                     Book = book,
                     User = user,
-                    Rating = rating,
-                    Comment = comment
+                    Rating = rating
                 };
                 _context.ReadBooks.Add(readBook);
             }

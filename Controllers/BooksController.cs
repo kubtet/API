@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SQLitePCL;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -40,6 +41,15 @@ namespace API.Controllers
             }
  
             return Ok(book);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> deleteBook([FromRoute] int id)
+        {
+            if(await _bookRepository.DeleteBook(id))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
         [HttpGet("getByTitle/{title}")]
         public async Task<IActionResult> getBookByTitle([FromRoute] string title)
@@ -154,7 +164,7 @@ namespace API.Controllers
                 return BadRequest(ModelState);
             }
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (await _bookRepository.ToRead(userName, BookId, readBookDto.Rating, readBookDto.Comment))
+            if (await _bookRepository.ToRead(userName, BookId, readBookDto.Rating))
             {
                 return Ok();
             }
