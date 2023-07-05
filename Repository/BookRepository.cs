@@ -202,7 +202,7 @@ namespace API.Repository
             var result = await _context.SaveChangesAsync();
             return result > 0;
         }
-        public async Task<Boolean> ToRead(string userName, int BookId, int rating) {
+        public async Task<Boolean> Read(string userName, int BookId) {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == userName);
             if (user == null)
             {
@@ -221,7 +221,6 @@ namespace API.Repository
                 {
                     Book = book,
                     User = user,
-                    Rating = rating
                 };
                 _context.ReadBooks.Add(readBook);
             }
