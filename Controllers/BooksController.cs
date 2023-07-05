@@ -151,20 +151,10 @@ namespace API.Controllers
         [HttpPut]
         [Route("{BookId}/Read")]
         [Authorize]
-        public async Task<IActionResult> addToRead([FromRoute]int BookId, [FromBody] ReadBookDto readBookDto)
+        public async Task<IActionResult> addToRead([FromRoute]int BookId)
         {
-            if(readBookDto == null)
-            {
-                ModelState.AddModelError("Error", "Rating and comment are required");
-                return BadRequest(ModelState);
-            }
-            if(readBookDto.Rating < 1 || readBookDto.Rating > 5)
-            {
-                ModelState.AddModelError("Error", "Rating must be between 1 and 5");
-                return BadRequest(ModelState);
-            }
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (await _bookRepository.ToRead(userName, BookId, readBookDto.Rating))
+            if (await _bookRepository.Read(userName, BookId))
             {
                 return Ok();
             }

@@ -15,7 +15,7 @@ namespace API.Interfaces
         public Task<Boolean> AddGenreToBook(int BookId, int genreId);
         public Task<List<BookDto>> GetBooksByTitle(string title);
         public Task<bool> likeBook(string userName, int BookId);
-        public Task<Boolean> ToRead(string userName, int BookId, int rating);
+        public Task<Boolean> Read(string userName, int BookId);
         bool BookExists(int id);
         public Task<List<BookDto>> LikedBooks(string userName);
         public Task<List<BookDto>> ReadBooks(string userName);
